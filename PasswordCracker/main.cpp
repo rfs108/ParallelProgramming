@@ -7,11 +7,12 @@
 #include <sys/time.h>
 #include "md5.h"
 
-// Total number of combinations to produce for lengths 1-7
+// Total number of combinations to produce for lengths 1-4
+// Define this as 26^length desired - here 26^4
 #define COMBS 456976
 
 // Pthreads created
-#define NUM_THREADS 32
+#define NUM_THREADS 8
 
 // Size of set below
 #define SET_SIZE sizeof(set)
@@ -41,8 +42,8 @@ struct CombStruct{
 void DistributeRange(std::vector<CombStruct>&, long long, int);
 
 // Chosen password and hash
-std::string password = "drwz";
-std::string hash = md5(password);
+std::string password; //"zder";
+std::string hash; // = md5(password);
 
 // Execution time purposes
 double get_wall_time();
@@ -52,6 +53,11 @@ double t1, t2, t3;
 
 int main(){
 
+    std::cout << "Enter a password from set of characters a-z: ";
+    std::cin >> password;
+
+    hash = md5(password);
+
     // Create NUM_THREADS CombStruct objects per pthread
     std::vector<CombStruct>vec_structs;
     // Distribute work range per thread
@@ -59,7 +65,8 @@ int main(){
 
     // Track start time
     t1 = get_wall_time();
-    std::cout << "Main - Starting time\n\n";
+    std::cout << "\nMain - Starting time\n\n";
+    std::cout << "Computing combinations and hashes\n\n";
 
     // Creating NUM_THREADS pthreads
     pthread_t threads[NUM_THREADS];
